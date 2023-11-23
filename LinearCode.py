@@ -1,4 +1,4 @@
-import MatrixMod
+from MatrixMod import *
 
 
 class LinearCode:
@@ -9,15 +9,7 @@ class LinearCode:
     
 
     def identity_matrix(self, n: int) -> [[int]]:
-        """
-        probably a neater way to do this
-        """
-        identity_mat = [[0 for i in range(n)] for j in range(n)]
-
-        for i in range(n):
-            identity_mat[i][i] = 1
-
-        return identity_mat
+        return  [[0 if i != j else 1 for i in range(n)] for j in range(n)]
 
 
     def generator_matrix(self, mat: [[int]]) -> None:
@@ -59,14 +51,10 @@ class LinearCode:
         return mat1_rref.matrix == mat2_rref.matrix
 
 
-    def get_syndrome(self) -> None:
-        return
+    def get_syndrome(self, vector: [int]) -> [int]:
+        GF = MatrixMod(self.mod)
+        return GF.multiply_matrix(vector, self.get_transpose(self.H))
     
 
     def standard_array(self) -> None:
         return
-    
-
-# C = Code()
-# C.generator_matrix([[1,0,0,0,1,0,1], [0,1,0,0,1,1,1], [0,0,1,0,1,1,0],[0,0,0,1,0,1,1]])
-# C.parity_check([[1, 1, 1, 0, 1, 0, 0], [0, 1, 1, 1, 0, 1, 0], [1, 1, 0, 1, 0, 0, 1]])

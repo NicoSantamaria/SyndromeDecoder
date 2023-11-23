@@ -1,44 +1,47 @@
 class MatrixMod:
-    def __init__(self, m: [[int]], p: int = 0) -> None:
+    def __init__(self, p: int, m: [[int]]= None) -> None:
         """
         Note: for now, q must be prime
         """
         self.matrix = m
         self.modulus = p
 
+
     def __str__(self) -> str:
         return
 
+    # check not broken
     def reduce_vector(self, vector: [int]) -> [int]:
-        return [vector[i] % self.modulus for i in range(len(vector))]
+        return [x % self.modulus for x in vector]
+
 
     def multiply(self, x: int, y: int) -> int:
         return (x * y) % self.modulus
     
+
     def negate_vector(self, vector: [int]) -> [int]:
         return self.reduce_vector([self.multiply(-1, vector[i]) for i in range(len(vector))])
 
-    def find_mult_inverse(self, num: int) -> int:
-        """
-        We assume the inverse of num exists since self.modulus is prime
 
-        Can be optimized using Euler's Division Algorithm
-        """
+    def dot_product(self, vector1: [int], vector2: [int]) -> int:
+        return sum(self.multiply(a, b) for a, b in zip(vector1, vector2))
+
+
+    def multiply_matrix(self, mat1: [[int]], mat2: [[int]]) -> [[int]]:
+        return [[self.dot_product(row, col) for row in mat1] for col in self.get_transpose(mat2)]
+
+    # Can be optimized for large num with Euler's Division Algorithm
+    def find_mult_inverse(self, num: int) -> int:
         for x in range(1, self.modulus):
             if self.multiply(x, num) == 1:
                 return x
 
+    #Check not broken
     def vector_addition(self, vector1: [int], vector2: [int]) -> [int]:
-        if len(vector1) == len(vector2):
-            return self.reduce_vector([vector1[i] + vector2[i] for i in range(len(vector1))])
-
-        else:
-            print("These vectors cannot be added.")
+        return self.reduce_vector([v1 + v2 for v1, v2 in zip(vector1, vector2)])
     
+    # Row reduce self.matrix in place
     def rref(self) -> None:
-        """
-        row reduce self.matrix in-place
-        """
         num_rows = len(self.matrix)
         num_cols = len(self.matrix[0])
 
@@ -74,10 +77,9 @@ class MatrixMod:
             
             i += 1; j += 1
     
-    def get_transpose(self, m: [[int]]) -> [[int]]:
-        num_rows = len(m)
-        num_cols = len(m[0])
 
-        return [[m[j][i] for j in range(num_rows)] for i in range(num_cols)]
+    def get_transpose(self, mat: [[int]]) -> [[int]]:
+        num_rows = len(mat)
+        num_cols = len(mat[0])
 
-    
+        return [[mat[j][i] for j in range(num_rows)] for i in range(num_cols)]  
