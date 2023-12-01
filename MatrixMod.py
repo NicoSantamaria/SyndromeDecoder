@@ -36,7 +36,7 @@ class MatrixMod:
             if self.multiply(x, num) == 1:
                 return x
 
-    #Check not broken
+
     def vector_addition(self, vector1: [int], vector2: [int]) -> [int]:
         return self.reduce_vector([v1 + v2 for v1, v2 in zip(vector1, vector2)])
     
@@ -82,4 +82,6 @@ class MatrixMod:
         num_rows = len(mat)
         num_cols = len(mat[0])
 
-        return [[mat[j][i] for j in range(num_rows)] for i in range(num_cols)]  
+        return [[mat[j][i] for j in range(num_rows)] for i in range(num_cols)]
+    
+M = MatrixMod(5)
