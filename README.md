@@ -12,6 +12,10 @@ storage space required after initial computations, harnessing the fact that many
 vector space belong to the the same cosets within that vector space, and those cosets can be represented 
 by computationally inexpensive syndromes.
 
+For more on syndrome decoding, linear codes, and coding theory more generally, see: 
+
+Hill, Raymond (1986). A first course in coding theory. Oxford Applied Mathematics and Computing Science Series. Oxford University Press. ISBN 978-0-19-853803-5.
+
 In Syndrome Decoder, the Python module MatrixMod.py handles the background mathematics (linear algebra 
 operations over a finite field), while LinearCode.py performs the syndrome decoding algorithm. 
 Syndrome Decoder is a Python program which uses syndrome decoding to correct for errors in linear codes.
