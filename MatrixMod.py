@@ -7,10 +7,6 @@ class MatrixMod:
         self.modulus = p
 
 
-    def __str__(self) -> str:
-        return
-
-    # check not broken
     def reduce_vector(self, vector: [int]) -> [int]:
         return [x % self.modulus for x in vector]
 
@@ -84,4 +80,4 @@ class MatrixMod:
 
         return [[mat[j][i] for j in range(num_rows)] for i in range(num_cols)]
     
-M = MatrixMod(5)
+# M = MatrixMod(5)
