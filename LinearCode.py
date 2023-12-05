@@ -1,9 +1,8 @@
 """
 Notes:
-Only works for codes with minimal distance = 1, need to rewrite get_coset_leaders
-which unfortunately is a considerably more difficult combinatorial problem
+Check to see that it doesn't assume minimal weight = 1
 
-rewrite to use sympy for matrix multiplication
+Implement sympy for matrix multiplication
 """
 from MatrixMod import *
 
@@ -30,6 +29,7 @@ class LinearCode:
         # Build and store coset leaders and syndromes
         self.coset_leaders = self.get_coset_leaders(num_rows, self.mod - 1)
         self.syndromes = [self.get_syndrome(vector) for vector in self.coset_leaders]
+
     
 
     def decode(self, vector: [int]) -> [int]:
@@ -122,6 +122,7 @@ class LinearCode:
         if n == 0:
             return [[0] * length]
         
+        # For a linear code, minimum possible weight is 1
         return self.identity_matrix(length, n) + self.get_coset_leaders(length, n-1)
 
 
