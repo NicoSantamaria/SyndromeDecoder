@@ -1,7 +1,9 @@
 """
-Figure out how to delete parity_check and have it still work
+Notes:
+Only works for codes with minimal distance = 1, need to rewrite get_coset_leaders
+which unfortunately is a considerably more difficult combinatorial problem
 
-Then it's ready to be implemented into the website
+rewrite to use sympy for matrix multiplication
 """
 from MatrixMod import *
 
@@ -17,25 +19,17 @@ class LinearCode:
         # Call MatrixMod for linear algebra operations over finite field
         self.GF = MatrixMod(n, matrix); self.mod = n
         
-        # self.G is the generator matrix and self.H is the parity check
-        self.G = None; self.H = None
-        
         # Build self.G and self.H according to type of matrix input
-        self.generator_matrix() if is_generator else self.parity_check()
+        if is_generator:
+            self.generator_matrix()
+            num_rows = len(self.G[0])
+        else:
+            self.H = matrix
+            num_rows = len(self.H) + len(self.H[0])
 
         # Build and store coset leaders and syndromes
-        num_rows = len(self.G[0])
         self.coset_leaders = self.get_coset_leaders(num_rows, self.mod - 1)
         self.syndromes = [self.get_syndrome(vector) for vector in self.coset_leaders]
-    
-
-    def identity_matrix(self, n: int, multiple: int=1) -> [[int]]:
-        """
-        n: int - length of matrix
-        multiple: int - integer multiple of matrix
-        return: [[int]] - nxn identity matrix multiplied by multiple
-        """
-        return  [[0 if i != j else multiple for i in range(n)] for j in range(n)]
     
 
     def decode(self, vector: [int]) -> [int]:
@@ -54,6 +48,19 @@ class LinearCode:
             return self.GF.reduce_vector([v - l for v, l in zip(vector, leader)])
         except:
             print("Decode error.")
+
+    
+    def get_min_weight(self) -> int:
+        return 
+
+    
+    def identity_matrix(self, n: int, multiple: int=1) -> [[int]]:
+        """
+        n: int - length of matrix
+        multiple: int - integer multiple of matrix
+        return: [[int]] - nxn identity matrix multiplied by multiple
+        """
+        return  [[0 if i != j else multiple for i in range(n)] for j in range(n)]
 
 
     def generator_matrix(self) -> None:
@@ -89,37 +96,6 @@ class LinearCode:
             print("Generator matrix error.")
 
 
-    def parity_check(self) -> None:
-        """
-        Assumes that H is in reduced form -- can put H in standard form
-        by transposing and row reducing? Might also clean up later
-
-        Questions: Does H need to be in standard form? is it worth 
-        calculating the generator matrix given the parity check?
-
-        Marked for deletion, after some testing
-        """
-        self.H = self.GF.matrix
-
-        num_rows = len(self.H)
-        num_cols = len(self.H[0])
-        parity_dim = min(num_rows, num_cols)
-        dim = max(num_rows, num_cols) - parity_dim
-
-        try:
-            non_identity = self.GF.get_transpose([
-                self.GF.negate_vector(self.H[i][:dim])
-                for i in range(num_rows)
-                ])
-            
-            self.G = [
-                self.identity_matrix(dim)[i] + non_identity[i]
-                for i in range(dim)
-                ]
-        except:
-            print("Parity-check error.")
-
-
     def get_syndrome(self, vector: [int]) -> [int]:
         """
         vector: [int] - a vector in the codespace
@@ -146,8 +122,6 @@ class LinearCode:
         if n == 0:
             return [[0] * length]
         
-        # For a linear code, the minimal weight is one, so calls the identity matrix
-        # constructor and multiplies by n, which decreases recursively
         return self.identity_matrix(length, n) + self.get_coset_leaders(length, n-1)
 
 
